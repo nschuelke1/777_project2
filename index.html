@@ -15,17 +15,44 @@
   ></script>
   <script src="app.js" defer></script>
 </head>
-<body>\
-    <button onclick="showUserLocation()" style="position:absolute; top:10px; right:10px; z-index:1100;">
-  Show My Location
-</button>
-    <div id="layer-controls" style="padding: 10px;">
-  <label><input type="checkbox" checked onchange="toggleLayer('Campsites')"> Campsites</label><br>
-  <label><input type="checkbox" checked onchange="toggleLayer('Parking')"> Parking</label><br>
-  <label><input type="checkbox" checked onchange="toggleLayer('Trailheads')"> Trailheads</label><br>
-  <label><input type="checkbox" checked onchange="toggleLayer('Wineries')"> Wineries</label>
-</div>
+<body>
+  <button onclick="showUserLocation()" style="position:absolute; top:10px; right:10px; z-index:1100;">
+    Show My Location
+  </button>
+
+  <div id="layer-controls" style="padding: 10px;">
+    <label><input type="checkbox" checked onchange="toggleLayer('Campsites')"> Campsites</label><br>
+    <label><input type="checkbox" checked onchange="toggleLayer('Parking')"> Parking</label><br>
+    <label><input type="checkbox" checked onchange="toggleLayer('Trailheads')"> Trailheads</label><br>
+    <label><input type="checkbox" checked onchange="toggleLayer('Wineries')"> Wineries</label>
+  </div>
+
+  <div id="wildlife-form" style="position:absolute; top:80px; right:10px; background:white; padding:15px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:1100; width:250px; font-family:sans-serif;">
+    <h3 style="margin-top:0; font-size:16px;">Report Wildlife Sighting</h3>
+    <form id="sighting-form">
+      <label for="species">Species:</label>
+      <select id="species" name="species" required style="width:100%; padding:6px; margin-top:4px;">
+        <option value="">Select</option>
+        <option value="deer">Deer</option>
+        <option value="fox">Fox</option>
+        <option value="eagle">Eagle</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="location">Location (lat,lng):</label>
+      <input type="text" id="location" name="location" placeholder="Click on map" required readonly style="width:100%; padding:6px; margin-top:4px;">
+
+      <label for="notes">Notes:</label>
+      <textarea id="notes" name="notes" rows="3" placeholder="Optional" style="width:100%; padding:6px; margin-top:4px;"></textarea>
+
+      <button type="submit" style="margin-top:12px; padding:8px 12px; background-color:#28a745; color:white; border:none; border-radius:6px; cursor:pointer;">
+        Submit Sighting
+      </button>
+    </form>
+  </div>
+
   <div id="map"></div>
+
   <div id="legend">
     <h4>Legend</h4>
     <ul>
@@ -35,5 +62,46 @@
       <li><img src="icons/winery.png" /> Wineries</li>
     </ul>
   </div>
+
+  <script>
+    // Capture map click to autofill location
+    let map;
+    window.addEventListener('load', () => {
+      map = L.map('map').setView([45.15, -87.22], 13); // Adjust center as needed
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      map.on('click', function(e) {
+        const latlng = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+        document.getElementById('location').value = latlng;
+      });
+    });
+
+    // Submit form to Flask
+    document.getElementById('sighting-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const species = document.getElementById('species').value;
+      const location = document.getElementById('location').value;
+      const notes = document.getElementById('notes').value;
+
+      fetch('http://127.0.0.1:5000/submit_sighting', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ species, location, notes })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          const [lat, lng] = location.split(',').map(Number);
+          const marker = L.marker([lat, lng]).addTo(map);
+          marker.bindPopup(`<strong>${species}</strong><br>${notes || 'No notes'}`).openPopup();
+          document.getElementById('sighting-form').reset();
+          document.getElementById('location').value = '';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
