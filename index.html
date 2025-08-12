@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peninsula State Park Map</title>
+  <link rel="stylesheet" href="style.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    defer
+  ></script>
+  <script src="app.js" defer></script>
+</head>
+<body>\
+    <button onclick="showUserLocation()" style="position:absolute; top:10px; right:10px; z-index:1100;">
+  Show My Location
+</button>
+    <div id="layer-controls" style="padding: 10px;">
+  <label><input type="checkbox" checked onchange="toggleLayer('Campsites')"> Campsites</label><br>
+  <label><input type="checkbox" checked onchange="toggleLayer('Parking')"> Parking</label><br>
+  <label><input type="checkbox" checked onchange="toggleLayer('Trailheads')"> Trailheads</label><br>
+  <label><input type="checkbox" checked onchange="toggleLayer('Wineries')"> Wineries</label>
+</div>
+  <div id="map"></div>
+  <div id="legend">
+    <h4>Legend</h4>
+    <ul>
+      <li><img src="icons/campsite.png" /> Campsites</li>
+      <li><img src="icons/parking.png" /> Parking</li>
+      <li><img src="icons/trailhead.png" /> Trailheads</li>
+      <li><img src="icons/winery.png" /> Wineries</li>
+    </ul>
+  </div>
+</body>
+</html>
