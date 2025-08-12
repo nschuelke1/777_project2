@@ -2,12 +2,12 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
-// Serve static files from the "public" folder (adjust if needed)
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the root directory
+app.use(express.static(__dirname));
 
-// Fallback for SPA routing (optional)
+// Fallback for single-page apps (optional)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;
