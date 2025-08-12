@@ -1,0 +1,12 @@
+{
+  "name": "peninsula-state-park",
+  "version": "1.0.0",
+  "description": "Park map app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
