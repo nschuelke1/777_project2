@@ -60,13 +60,17 @@ if __name__ == '__main__':
   
 import json  # Make sure this is imported at the top
 
+import json  # Make sure this is at the top of your file
+
 @app.route('/api/campsites')
 def get_campsites():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(wkb_geometry) AS geometry
+                SELECT popup_desc, image_url, site_type, amenities,
+                       ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM public.campsites
+                WHERE wkb_geometry IS NOT NULL
             """)
             rows = cur.fetchall()
 
@@ -96,6 +100,9 @@ def get_campsites():
         conn.rollback()
         print(f"Error in /api/campsites: {e}")
         return jsonify({"error": str(e)}), 500
+
+
+
 
 
 @app.route('/api/parking')
