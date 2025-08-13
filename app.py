@@ -19,6 +19,7 @@ conn = psycopg2.connect(
     port=url.port
 )
 
+
 @app.route('/submit_sighting', methods=['POST'])
 def submit_sighting():
     data = request.json
