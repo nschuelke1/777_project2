@@ -19,6 +19,9 @@ conn = psycopg2.connect(
     port=url.port
 )
 
+@app.route('/')
+def index():
+    return "App is running!"
 
 @app.route('/submit_sighting', methods=['POST'])
 def submit_sighting():
@@ -37,6 +40,5 @@ def submit_sighting():
     return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
