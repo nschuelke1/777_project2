@@ -42,7 +42,7 @@ const icons = {
 const popupFormatters = {
   campsite: props => {
     const desc = props.popup_desc || 'No description available';
-    const bookingLink = props.Image_url
+    const bookingLink = props.image_url
       ? `<a href="${props.Image_url}" target="_blank" rel="noopener noreferrer">Book this campsite</a>`
       : 'Booking link not available';
     const amenities = props.amenities || 'Not listed';
@@ -113,10 +113,10 @@ function loadLayer(url, iconType, layerName, popupFn) {
 }
 
 // Load all layers
-loadLayer('/static/data/campsites.geojson', 'campsite', 'Campsites', popupFormatters.campsite);
-loadLayer('/static/data/parking.geojson', 'parking', 'Parking', popupFormatters.parking);
-loadLayer('/static/data/trailheads.geojson', 'trailhead', 'Trailheads', popupFormatters.trailhead);
-loadLayer('/static/data/wineries.geojson', 'winery', 'Wineries', popupFormatters.winery);
+loadLayer('/api/campsites', 'campsite', 'Campsites', popupFormatters.campsite);
+loadLayer('/api/parking', 'parking', 'Parking', popupFormatters.parking);
+loadLayer('/api/trailheads', 'trailhead', 'Trailheads', popupFormatters.trailhead);
+loadLayer('/api/wineries', 'winery', 'Wineries', popupFormatters.winery);
 
 
 
