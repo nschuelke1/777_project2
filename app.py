@@ -3,11 +3,12 @@ from flask_cors import CORS
 import psycopg2
 import urllib.parse as up
 import os
+import json
 
 app = Flask(__name__)
 CORS(app)
 
-# Parse database URL from environment
+# Load environment variables
 up.uses_netloc.append("postgres")
 url = up.urlparse(os.environ["DATABASE_URL"])
 
@@ -42,176 +43,67 @@ def submit_sighting():
 
     return jsonify({'status': 'success'})
 
-# Optional generic submit route (if needed)
-@app.route('/submit', methods=['POST'])
-def submit():
-    data = request.get_json()
-    # process and store data
-    return jsonify({'status': 'success'})
+# Campsites API
+@app.route('/api/campsites')
+def get_campsites():
+    return fetch_geojson("public.campsites", [
+        "popup_desc", "image_url", "site_type", "amenities"
+    ])
+
+# Parking API
+@app.route('/api/parking')
+def get_parking():
+    return fetch_geojson("public.parking", ["name"])
+
+# Trailheads API
+@app.route('/api/trailheads')
+def get_trailheads():
+    return fetch_geojson("public.trailheads", [
+        "trail_name", "description", "difficulty", "length"
+    ])
+
+# Wineries API
+@app.route('/api/wineries')
+def get_wineries():
+    return fetch_geojson("public.wineries", [
+        "name", "address", "website_url"
+    ])
+
+# Generic GeoJSON fetcher
+def fetch_geojson(table, columns):
+    try:
+        with conn.cursor() as cur:
+            col_str = ", ".join(columns)
+            cur.execute(f"""
+                SELECT {col_str}, ST_AsGeoJSON(wkb_geometry) AS geometry
+                FROM {table}
+                WHERE wkb_geometry IS NOT NULL
+            """)
+            rows = cur.fetchall()
+
+        features = []
+        for row in rows:
+            *props, geometry = row
+            try:
+                geojson = json.loads(geometry)
+            except Exception as geo_err:
+                print(f"GeoJSON parse error ({table}): {geo_err}")
+                continue
+
+            features.append({
+                "type": "Feature",
+                "geometry": geojson,
+                "properties": dict(zip(columns, props))
+            })
+
+        return jsonify({"type": "FeatureCollection", "features": features})
+
+    except Exception as e:
+        conn.rollback()
+        print(f"Error in /api/{table}: {e}")
+        return jsonify({"error": str(e)}), 500
 
 # Run the app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
-  
-  
-  
-  
-
-
-import json  
-
-@app.route('/api/campsites')
-def get_campsites():
-    try:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT popup_desc, image_url, site_type, amenities,
-                       ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM public.campsites
-                WHERE wkb_geometry IS NOT NULL
-            """)
-            rows = cur.fetchall()
-
-        features = []
-        for desc, url, site_type, amenities, geometry in rows:
-            try:
-                geojson = json.loads(geometry)
-            except Exception as geo_err:
-                print(f"GeoJSON parse error (campsites): {geo_err}")
-                print(f"Bad geometry: {geometry}")
-                continue
-
-            features.append({
-                "type": "Feature",
-                "geometry": geojson,
-                "properties": {
-                    "popup_desc": desc,
-                    "image_url": url,
-                    "site_type": site_type,
-                    "amenities": amenities
-                }
-            })
-
-        return jsonify({"type": "FeatureCollection", "features": features})
-
-    except Exception as e:
-        conn.rollback()
-        print(f"Error in /api/campsites: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/api/parking')
-def get_parking():
-    try:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT name, ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM public.parking
-                WHERE wkb_geometry IS NOT NULL
-            """)
-            rows = cur.fetchall()
-
-        features = []
-        for name, geometry in rows:
-            try:
-                geojson = json.loads(geometry)
-            except Exception as geo_err:
-                print(f"GeoJSON parse error (parking): {geo_err}")
-                print(f"Bad geometry: {geometry}")
-                continue
-
-            features.append({
-                "type": "Feature",
-                "geometry": geojson,
-                "properties": {
-                    "name": name
-                }
-            })
-
-        return jsonify({"type": "FeatureCollection", "features": features})
-
-    except Exception as e:
-        conn.rollback()
-        print(f"Error in /api/parking: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/api/trailheads')
-def get_trailheads():
-    try:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT trail_name, description, difficulty, length,
-                       ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM public.trailheads
-                WHERE wkb_geometry IS NOT NULL
-            """)
-            rows = cur.fetchall()
-
-        features = []
-        for name, desc, difficulty, length, geometry in rows:
-            try:
-                geojson = json.loads(geometry)
-            except Exception as geo_err:
-                print(f"GeoJSON parse error (trailheads): {geo_err}")
-                print(f"Bad geometry: {geometry}")
-                continue
-
-            features.append({
-                "type": "Feature",
-                "geometry": geojson,
-                "properties": {
-                    "trail_name": name,
-                    "description": desc,
-                    "difficulty": difficulty,
-                    "length": length
-                }
-            })
-
-        return jsonify({"type": "FeatureCollection", "features": features})
-
-    except Exception as e:
-        conn.rollback()
-        print(f"Error in /api/trailheads: {e}")
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/api/wineries')
-def get_wineries():
-    try:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT name, address, website_url,
-                       ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM public.wineries
-                WHERE wkb_geometry IS NOT NULL
-            """)
-            rows = cur.fetchall()
-
-        features = []
-        for name, address, website, geometry in rows:
-            try:
-                geojson = json.loads(geometry)
-            except Exception as geo_err:
-                print(f"GeoJSON parse error (wineries): {geo_err}")
-                print(f"Bad geometry: {geometry}")
-                continue
-
-            features.append({
-                "type": "Feature",
-                "geometry": geojson,
-                "properties": {
-                    "name": name,
-                    "address": address,
-                    "website_url": website
-                }
-            })
-
-        return jsonify({"type": "FeatureCollection", "features": features})
-
-    except Exception as e:
-        conn.rollback()
-        print(f"Error in /api/wineries: {e}")
-        return jsonify({"error": str(e)}), 500
