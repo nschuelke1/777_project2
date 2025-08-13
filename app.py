@@ -5,13 +5,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Connect to your PostgreSQL database
+import urllib.parse as up
+import os
+
+up.uses_netloc.append("postgres")
+url = up.urlparse(os.environ["DATABASE_URL"])
+
 conn = psycopg2.connect(
-    dbname="wildlife_map",
-    user="postgres",
-    password="admin",
-    host="localhost",
-    port="5432"
+    database=url.path[1:],
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
 )
 
 @app.route('/submit_sighting', methods=['POST'])
@@ -31,4 +36,6 @@ def submit_sighting():
     return jsonify({'status': 'success'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
