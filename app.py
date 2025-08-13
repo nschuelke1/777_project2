@@ -60,7 +60,7 @@ if __name__ == '__main__':
   
 
 
-import json 
+import json  
 
 @app.route('/api/campsites')
 def get_campsites():
