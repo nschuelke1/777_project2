@@ -58,7 +58,7 @@ if __name__ == '__main__':
   
   
   
-    # GeoJSON API routes for map layers
+import json  # Make sure this is imported at the top
 
 @app.route('/api/campsites')
 def get_campsites():
@@ -66,7 +66,7 @@ def get_campsites():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM campsites
+                FROM public.campsites
             """)
             rows = cur.fetchall()
 
@@ -74,7 +74,7 @@ def get_campsites():
         for desc, url, site_type, amenities, geometry in rows:
             features.append({
                 "type": "Feature",
-                "geometry": eval(geometry),
+                "geometry": json.loads(geometry),
                 "properties": {
                     "popup_desc": desc,
                     "image_url": url,
@@ -83,15 +83,12 @@ def get_campsites():
                 }
             })
 
-        return jsonify({
-            "type": "FeatureCollection",
-            "features": features
-        })
+        return jsonify({"type": "FeatureCollection", "features": features})
+
     except Exception as e:
         conn.rollback()
         print(f"Error in /api/campsites: {e}")
         return jsonify({"error": str(e)}), 500
-    
 
 
 @app.route('/api/parking')
@@ -100,7 +97,7 @@ def get_parking():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT name, ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM parking
+                FROM public.parking
             """)
             rows = cur.fetchall()
 
@@ -108,21 +105,18 @@ def get_parking():
         for name, geometry in rows:
             features.append({
                 "type": "Feature",
-                "geometry": eval(geometry),
+                "geometry": json.loads(geometry),
                 "properties": {
                     "name": name
                 }
             })
 
-        return jsonify({
-            "type": "FeatureCollection",
-            "features": features
-        })
+        return jsonify({"type": "FeatureCollection", "features": features})
+
     except Exception as e:
         conn.rollback()
         print(f"Error in /api/parking: {e}")
         return jsonify({"error": str(e)}), 500
-    
 
 
 @app.route('/api/trailheads')
@@ -131,7 +125,7 @@ def get_trailheads():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT trail_name, description, difficulty, length, ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM trailheads
+                FROM public.trailheads
             """)
             rows = cur.fetchall()
 
@@ -139,7 +133,7 @@ def get_trailheads():
         for name, desc, difficulty, length, geometry in rows:
             features.append({
                 "type": "Feature",
-                "geometry": eval(geometry),
+                "geometry": json.loads(geometry),
                 "properties": {
                     "trail_name": name,
                     "description": desc,
@@ -148,15 +142,12 @@ def get_trailheads():
                 }
             })
 
-        return jsonify({
-            "type": "FeatureCollection",
-            "features": features
-        })
+        return jsonify({"type": "FeatureCollection", "features": features})
+
     except Exception as e:
         conn.rollback()
         print(f"Error in /api/trailheads: {e}")
         return jsonify({"error": str(e)}), 500
-    
 
 
 @app.route('/api/wineries')
@@ -165,7 +156,7 @@ def get_wineries():
         with conn.cursor() as cur:
             cur.execute("""
                 SELECT name, address, website_url, ST_AsGeoJSON(wkb_geometry) AS geometry
-                FROM wineries
+                FROM public.wineries
             """)
             rows = cur.fetchall()
 
@@ -173,7 +164,7 @@ def get_wineries():
         for name, address, website, geometry in rows:
             features.append({
                 "type": "Feature",
-                "geometry": eval(geometry),
+                "geometry": json.loads(geometry),
                 "properties": {
                     "name": name,
                     "address": address,
@@ -181,10 +172,8 @@ def get_wineries():
                 }
             })
 
-        return jsonify({
-            "type": "FeatureCollection",
-            "features": features
-        })
+        return jsonify({"type": "FeatureCollection", "features": features})
+
     except Exception as e:
         conn.rollback()
         print(f"Error in /api/wineries: {e}")
