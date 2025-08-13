@@ -58,9 +58,9 @@ if __name__ == '__main__':
   
   
   
-import json  # Make sure this is imported at the top
 
-import json  # Make sure this is at the top of your file
+
+import json 
 
 @app.route('/api/campsites')
 def get_campsites():
@@ -79,9 +79,9 @@ def get_campsites():
             try:
                 geojson = json.loads(geometry)
             except Exception as geo_err:
-                print(f"GeoJSON parse error: {geo_err}")
+                print(f"GeoJSON parse error (campsites): {geo_err}")
                 print(f"Bad geometry: {geometry}")
-                continue  # Skip this feature
+                continue
 
             features.append({
                 "type": "Feature",
@@ -102,9 +102,6 @@ def get_campsites():
         return jsonify({"error": str(e)}), 500
 
 
-
-
-
 @app.route('/api/parking')
 def get_parking():
     try:
@@ -112,14 +109,22 @@ def get_parking():
             cur.execute("""
                 SELECT name, ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM public.parking
+                WHERE wkb_geometry IS NOT NULL
             """)
             rows = cur.fetchall()
 
         features = []
         for name, geometry in rows:
+            try:
+                geojson = json.loads(geometry)
+            except Exception as geo_err:
+                print(f"GeoJSON parse error (parking): {geo_err}")
+                print(f"Bad geometry: {geometry}")
+                continue
+
             features.append({
                 "type": "Feature",
-                "geometry": json.loads(geometry),
+                "geometry": geojson,
                 "properties": {
                     "name": name
                 }
@@ -138,16 +143,25 @@ def get_trailheads():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT trail_name, description, difficulty, length, ST_AsGeoJSON(wkb_geometry) AS geometry
+                SELECT trail_name, description, difficulty, length,
+                       ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM public.trailheads
+                WHERE wkb_geometry IS NOT NULL
             """)
             rows = cur.fetchall()
 
         features = []
         for name, desc, difficulty, length, geometry in rows:
+            try:
+                geojson = json.loads(geometry)
+            except Exception as geo_err:
+                print(f"GeoJSON parse error (trailheads): {geo_err}")
+                print(f"Bad geometry: {geometry}")
+                continue
+
             features.append({
                 "type": "Feature",
-                "geometry": json.loads(geometry),
+                "geometry": geojson,
                 "properties": {
                     "trail_name": name,
                     "description": desc,
@@ -169,16 +183,25 @@ def get_wineries():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT name, address, website_url, ST_AsGeoJSON(wkb_geometry) AS geometry
+                SELECT name, address, website_url,
+                       ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM public.wineries
+                WHERE wkb_geometry IS NOT NULL
             """)
             rows = cur.fetchall()
 
         features = []
         for name, address, website, geometry in rows:
+            try:
+                geojson = json.loads(geometry)
+            except Exception as geo_err:
+                print(f"GeoJSON parse error (wineries): {geo_err}")
+                print(f"Bad geometry: {geometry}")
+                continue
+
             features.append({
                 "type": "Feature",
-                "geometry": json.loads(geometry),
+                "geometry": geojson,
                 "properties": {
                     "name": name,
                     "address": address,
