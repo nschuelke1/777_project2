@@ -72,9 +72,16 @@ def get_campsites():
 
         features = []
         for desc, url, site_type, amenities, geometry in rows:
+            try:
+                geojson = json.loads(geometry)
+            except Exception as geo_err:
+                print(f"GeoJSON parse error: {geo_err}")
+                print(f"Bad geometry: {geometry}")
+                continue  # Skip this feature
+
             features.append({
                 "type": "Feature",
-                "geometry": json.loads(geometry),
+                "geometry": geojson,
                 "properties": {
                     "popup_desc": desc,
                     "image_url": url,
