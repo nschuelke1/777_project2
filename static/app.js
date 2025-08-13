@@ -10,25 +10,25 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Icon definitions
 const icons = {
   campsite: L.icon({
-    iconUrl: 'icons/campsite.png',
+    iconUrl: '/static/icons/campsite.png',
     iconSize: [25, 25],
     iconAnchor: [12, 25],
     popupAnchor: [0, -25]
   }),
   parking: L.icon({
-    iconUrl: 'icons/parking.png',
+    iconUrl: '/static/icons/parking.png',
     iconSize: [25, 25],
     iconAnchor: [12, 25],
     popupAnchor: [0, -25]
   }),
   trailhead: L.icon({
-    iconUrl: 'icons/trailhead.png',
+    iconUrl: '/static/icons/trailhead.png',
     iconSize: [25, 25],
     iconAnchor: [12, 25],
     popupAnchor: [0, -25]
   }),
   winery: L.icon({
-    iconUrl: 'icons/winery.png',
+    iconUrl: '/static/icons/winery.png',
     iconSize: [25, 25],
     iconAnchor: [12, 25],
     popupAnchor: [0, -25]
@@ -143,7 +143,7 @@ function showUserLocation() {
 
     const userMarker = L.marker([lat, lng], {
       icon: L.icon({
-        iconUrl: 'icons/user.png', // Add a user icon if you want
+        iconUrl: '/static/icons/user.png', 
         iconSize: [25, 25],
         iconAnchor: [12, 25],
         popupAnchor: [0, -25]
