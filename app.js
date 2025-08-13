@@ -156,3 +156,33 @@ function showUserLocation() {
     alert("Unable to retrieve your location.");
   });
 }
+
+// Capture map click to autofill location
+map.on('click', function(e) {
+  const latlng = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+  document.getElementById('location').value = latlng;
+});
+
+// Submit form to Flask
+document.getElementById('sighting-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const species = document.getElementById('species').value;
+  const location = document.getElementById('location').value;
+  const notes = document.getElementById('notes').value;
+
+  fetch('/submit_sighting', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ species, location, notes })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      const [lat, lng] = location.split(',').map(Number);
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(`<strong>${species}</strong><br>${notes || 'No notes'}`).openPopup();
+      document.getElementById('sighting-form').reset();
+      document.getElementById('location').value = '';
+    }
+  });
+});
