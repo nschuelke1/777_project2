@@ -94,7 +94,7 @@ def get_campsites():
     
 
 
-    @app.route('/api/parking')
+@app.route('/api/parking')
 def get_parking():
     try:
         with conn.cursor() as cur:
@@ -125,7 +125,7 @@ def get_parking():
     
 
 
-    @app.route('/api/trailheads')
+@app.route('/api/trailheads')
 def get_trailheads():
     try:
         with conn.cursor() as cur:
@@ -159,7 +159,7 @@ def get_trailheads():
     
 
 
-    @app.route('/api/wineries')
+@app.route('/api/wineries')
 def get_wineries():
     try:
         with conn.cursor() as cur:
