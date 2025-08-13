@@ -65,7 +65,7 @@ def get_campsites():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(geom) AS geometry
+                SELECT popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM campsites
             """)
             rows = cur.fetchall()
@@ -99,7 +99,7 @@ def get_parking():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT name, ST_AsGeoJSON(geom) AS geometry
+                SELECT name, ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM parking
             """)
             rows = cur.fetchall()
@@ -130,7 +130,7 @@ def get_trailheads():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT trail_name, description, difficulty, length, ST_AsGeoJSON(geom) AS geometry
+                SELECT trail_name, description, difficulty, length, ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM trailheads
             """)
             rows = cur.fetchall()
@@ -164,7 +164,7 @@ def get_wineries():
     try:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT name, address, website_url, ST_AsGeoJSON(geom) AS geometry
+                SELECT name, address, website_url, ST_AsGeoJSON(wkb_geometry) AS geometry
                 FROM wineries
             """)
             rows = cur.fetchall()
