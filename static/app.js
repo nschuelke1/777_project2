@@ -113,10 +113,10 @@ function loadLayer(url, iconType, layerName, popupFn) {
 }
 
 // Load all layers
-loadLayer('data/campsites.geojson', 'campsite', 'Campsites', popupFormatters.campsite);
-loadLayer('data/parking.geojson', 'parking', 'Parking', popupFormatters.parking);
-loadLayer('data/trailheads.geojson', 'trailhead', 'Trailheads', popupFormatters.trailhead);
-loadLayer('data/wineries.geojson', 'winery', 'Wineries', popupFormatters.winery);
+loadLayer('/static/data/campsites.geojson', 'campsite', 'Campsites', popupFormatters.campsite);
+loadLayer('/static/data/parking.geojson', 'parking', 'Parking', popupFormatters.parking);
+loadLayer('/static/data/trailheads.geojson', 'trailhead', 'Trailheads', popupFormatters.trailhead);
+loadLayer('/static/data/wineries.geojson', 'winery', 'Wineries', popupFormatters.winery);
 
 
 
