@@ -54,13 +54,17 @@ if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
 
+  
+  
+  
+  
     # GeoJSON API routes for map layers
 
 @app.route('/api/campsites')
 def get_campsites():
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT id, popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(geom) AS geometry
+            SELECT popup_desc, image_url, site_type, amenities, ST_AsGeoJSON(geom) AS geometry
             FROM campsites
         """)
         rows = cur.fetchall()
@@ -71,7 +75,6 @@ def get_campsites():
             "type": "Feature",
             "geometry": eval(geometry),
             "properties": {
-                "id": id,
                 "popup_desc": desc,
                 "image_url": url,
                 "site_type": site_type,
@@ -84,11 +87,14 @@ def get_campsites():
         "features": features
     })
 
+
+
+
 @app.route('/api/parking')
 def get_parking():
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT id, name, ST_AsGeoJSON(geom) AS geometry
+            SELECT name, ST_AsGeoJSON(geom) AS geometry
             FROM parking
         """)
         rows = cur.fetchall()
@@ -99,7 +105,6 @@ def get_parking():
             "type": "Feature",
             "geometry": eval(geometry),
             "properties": {
-                "id": id,
                 "name": name
             }
         })
@@ -109,22 +114,24 @@ def get_parking():
         "features": features
     })
 
+
+
+
 @app.route('/api/trailheads')
 def get_trailheads():
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT id, trail_name, description, difficulty, length, ST_AsGeoJSON(geom) AS geometry
+            SELECT trail_name, description, difficulty, length, ST_AsGeoJSON(geom) AS geometry
             FROM trailheads
         """)
         rows = cur.fetchall()
 
     features = []
-    for id, name, desc, difficulty, length, geometry in rows:
+    for name, desc, difficulty, length, geometry in rows:
         features.append({
             "type": "Feature",
             "geometry": eval(geometry),
             "properties": {
-                "id": id,
                 "trail_name": name,
                 "description": desc,
                 "difficulty": difficulty,
@@ -137,11 +144,14 @@ def get_trailheads():
         "features": features
     })
 
+
+
+
 @app.route('/api/wineries')
 def get_wineries():
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT id, name, address, website_url, ST_AsGeoJSON(geom) AS geometry
+            SELECT name, address, website_url, ST_AsGeoJSON(geom) AS geometry
             FROM wineries
         """)
         rows = cur.fetchall()
@@ -152,7 +162,6 @@ def get_wineries():
             "type": "Feature",
             "geometry": eval(geometry),
             "properties": {
-                "id": id,
                 "name": name,
                 "address": address,
                 "website_url": website
