@@ -43,7 +43,7 @@ def submit_sighting():
         notes = data.get('notes', '')
         lat, lng = map(float, data['location'].split(','))
 
-        with conn.cursor() as cur:
+        with wildlife_conn.cursor() as cur:
             cur.execute("""
                 INSERT INTO wildlife_sightings (species, notes, location)
                 VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
