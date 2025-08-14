@@ -29,19 +29,25 @@ def index():
 # Wildlife form submission
 @app.route('/submit_sighting', methods=['POST'])
 def submit_sighting():
-    data = request.json
-    species = data['species']
-    notes = data.get('notes', '')
-    lat, lng = map(float, data['location'].split(','))
+    try:
+        data = request.json
+        species = data['species']
+        notes = data.get('notes', '')
+        lat, lng = map(float, data['location'].split(','))
 
-    with conn.cursor() as cur:
-        cur.execute("""
-            INSERT INTO wildlife_sightings (species, notes, location)
-            VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
-        """, (species, notes, lng, lat))
-        conn.commit()
+        with conn.cursor() as cur:
+            cur.execute("""
+                INSERT INTO wildlife_sightings (species, notes, location)
+                VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326))
+            """, (species, notes, lng, lat))
+            conn.commit()
 
-    return jsonify({'status': 'success'})
+        return jsonify({'status': 'success'})
+
+    except Exception as e:
+        conn.rollback()
+        print("Wildlife form error:", e)  # This will show the real error in your terminal
+        return jsonify({'error': str(e)}), 500
 
 # Campsites API
 @app.route('/api/campsites')
