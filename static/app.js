@@ -141,14 +141,7 @@ function showUserLocation() {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
 
-    const userMarker = L.marker([lat, lng], {
-      icon: L.icon({
-        iconUrl: '/static/icons/user.png', 
-        iconSize: [25, 25],
-        iconAnchor: [12, 25],
-        popupAnchor: [0, -25]
-      })
-    }).addTo(map);
+    const userMarker = L.marker([lat, lng]).addTo(map);
 
     userMarker.bindPopup("You are here").openPopup();
     map.setView([lat, lng], 15);

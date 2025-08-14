@@ -47,7 +47,7 @@ def submit_sighting():
 @app.route('/api/campsites')
 def get_campsites():
     return fetch_geojson("public.campsites", [
-        "popup_desc", "image_url", "site_type", "amenities"
+        "popup_desc", "website_url", "site_type", "amenities"
     ])
 
 # Parking API
