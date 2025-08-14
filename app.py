@@ -21,6 +21,14 @@ conn = psycopg2.connect(
     port=url.port                  
 )
 
+wildlife_conn = psycopg2.connect(
+    dbname="wildlife_map",
+    user=url.username,
+    password=url.password,
+    host=url.hostname,
+    port=url.port
+)
+
 # Serve frontend
 @app.route('/')
 def index():
