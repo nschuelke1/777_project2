@@ -112,10 +112,10 @@ function loadLayer(url, iconType, layerName, popupFn) {
 }
 
 // Load all layers
-loadLayer('https://peninsula-state-park-6aced2ae06e5.herokuapp.com/api/campsites', 'campsite', 'Campsites', popupFormatters.campsite);
-loadLayer('https://peninsula-state-park-6aced2ae06e5.herokuapp.com/api/parking', 'parking', 'Parking', popupFormatters.parking);
-loadLayer('https://peninsula-state-park-6aced2ae06e5.herokuapp.com/api/trailheads', 'trailhead', 'Trailheads', popupFormatters.trailhead);
-loadLayer('https://peninsula-state-park-6aced2ae06e5.herokuapp.com/api/wineries', 'winery', 'Wineries', popupFormatters.winery);
+loadLayer('http://127.0.0.1:5000/api/campsites', 'campsite', 'Campsites', popupFormatters.campsite);
+loadLayer('http://127.0.0.1:5000/api/parking', 'parking', 'Parking', popupFormatters.parking);
+loadLayer('http://127.0.0.1:5000/api/trailheads', 'trailhead', 'Trailheads', popupFormatters.trailhead);
+loadLayer('http://127.0.0.1:5000/api/wineries', 'winery', 'Wineries', popupFormatters.winery);
 
 
 
