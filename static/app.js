@@ -42,8 +42,8 @@ const icons = {
 const popupFormatters = {
   campsite: props => {
     const desc = props.popup_desc || 'No description available';
-    const bookingLink = props.image_url
-      ? `<a href="${props.Image_url}" target="_blank" rel="noopener noreferrer">Book this campsite</a>`
+    const bookingLink = props.website_url
+      ? `<a href="${props.website_url}" target="_blank" rel="noopener noreferrer">Book this campsite</a>`
       : 'Booking link not available';
     const amenities = props.amenities || 'Not listed';
     const siteType = props.site_type || 'Unknown';
@@ -89,7 +89,6 @@ const popupFormatters = {
     `;
   }
 }; 
-
 
 
 
