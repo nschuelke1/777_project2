@@ -53,7 +53,7 @@ def submit_sighting():
         return jsonify({'status': 'success'})
 
     except Exception as e:
-        conn.rollback()
+        wildlife_conn.rollback()
         print("Wildlife form error:", e)  # This will show the real error in your terminal
         return jsonify({'error': str(e)}), 500
 
