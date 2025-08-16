@@ -46,7 +46,7 @@ const parkBoundary = [
 ];
 
 const boundary = L.polygon(parkBoundary, {
-  color: 'green',
+  color: 'black',
   weight: 3,
   fillOpacity: 0.1
 }).addTo(map);
