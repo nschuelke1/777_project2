@@ -24,10 +24,18 @@
   <script src="{{ url_for('static', filename='app.js') }}" defer></script>
 </head>
 <body>
-  <body>
+  <div id="splash-screen">
+    <div id="splash-content">
+      <h2>Welcome to Peninsula State Park</h2>
+      <p>Explore campsites, trails, wineries, and report wildlife sightings.</p>
+      <button onclick="hideSplash()">Enter Map</button>
+    </div>
+  </div>
+
   <h1 style="text-align:center; font-family:sans-serif; margin-top:20px; margin-bottom:10px;">
     Peninsula State Park
   </h1>
+
   <button onclick="showUserLocation()" style="position:absolute; top:10px; right:10px; z-index:1100;">
     Show My Location
   </button>

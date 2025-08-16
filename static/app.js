@@ -178,3 +178,7 @@ document.getElementById('sighting-form').addEventListener('submit', function(e) 
     }
   });
 });
+
+function hideSplash() {
+  document.getElementById('splash-screen').style.display = 'none';
+}
