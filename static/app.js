@@ -74,13 +74,14 @@ const parkBoundary = [
   [45.164975,-87.234921],
   [45.162372,-87.234235],
   [45.160194,-87.238526], [45.156260,-87.238784], [45.149845,-87.243032], [45.135315,-87.239771], [45.128049,-87.239771] 
-  //[45.144, -87.210] // closing the loop
+ 
 ];
 
 const boundary = L.polygon(parkBoundary, {
-  color: 'black',
-  weight: 3,
-  fillOpacity: 0.1
+  color: 'green',
+  weight: 6,          // thicker line
+  opacity: 0.5,       // 50% transparent line
+  fillOpacity: 0.1    // faint interior shading
 }).addTo(map);
 
 boundary.bindPopup("Peninsula State Park Boundary");
