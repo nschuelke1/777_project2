@@ -161,15 +161,15 @@ function loadLayer(url, iconType, layerName, popupFn) {
 }
 
 // Load all layers
-loadLayer('http://127.0.0.1:5000/api/campsites', 'campsite', 'Campsites', popupFormatters.campsite);
-loadLayer('http://127.0.0.1:5000/api/parking', 'parking', 'Parking', popupFormatters.parking);
-loadLayer('http://127.0.0.1:5000/api/trailheads', 'trailhead', 'Trailheads', popupFormatters.trailhead);
-loadLayer('http://127.0.0.1:5000/api/wineries', 'winery', 'Wineries', popupFormatters.winery);
+loadLayer('/static/data/campsites.geojson', 'campsite', 'Campsites', popupFormatters.campsite);
+loadLayer('/static/data/parking.geojson', 'parking', 'Parking', popupFormatters.parking);
+loadLayer('/static/data/trailheads.geojson', 'trailhead', 'Trailheads', popupFormatters.trailhead);
+loadLayer('/static/data/wineries.geojson', 'winery', 'Wineries', popupFormatters.winery);
 
 
 
 function toggleLayer(name) {
-  const layer = mapLayers[name];
+  const layer = mapLayers[name]
   if (!layer) return;
 
   if (map.hasLayer(layer)) {
