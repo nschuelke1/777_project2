@@ -84,7 +84,7 @@ const boundary = L.polygon(parkBoundary, {
   fillOpacity: 0.1    // faint interior shading
 }).addTo(map);
 
-boundary.bindPopup("Peninsula State Park Boundary");
+
 
 
 // Popup formatting functions
