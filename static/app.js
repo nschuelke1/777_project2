@@ -35,55 +35,6 @@ const icons = {
   })
 };
 
-const parkBoundary = [
-  [45.128229, -87.240034],
-  [45.127373, -87.240036],
-  [45.127546, -87.239312],
-  [45.127496, -87.239001],
-  [45.126915, -87.238272],
-  [45.126154,-87.237655],
-  [45.125678,-87.237955],
-  [45.125643,-87.237043],
-  [45.126802,-87.236480],
-  [45.126700,-87.232014],
-  [45.127865,-87.232035],
-  [45.127911,-87.230362],
-  [45.128925,-87.229718],
-  [45.128713,-87.228731],
-  [45.129576,-87.226671],
-  [45.128425,-87.225684],
-  [45.140824,-87.194324],
-  [45.145848,-87.194066],
-  [45.146030,-87.184110],
-  [45.158136,-87.193637],
-  [45.162554,-87.194581],
-  [45.163885,-87.199302],
-  [45.163159,-87.203164],
-  [45.163946,-87.207112],
-  [45.165701,-87.211404],
-  [45.165096,-87.216983],
-  [45.165398,-87.218785],
-  [45.164975,-87.220502],
-  [45.165156,-87.223506],
-  [45.167758,-87.224879],
-  [45.169271,-87.221875],
-  [45.174899,-87.220931],
-  [45.173083,-87.229600],
-  [45.168666,-87.237067],
-  [45.166427,-87.238355],
-  [45.164975,-87.234921],
-  [45.162372,-87.234235],
-  [45.160194,-87.238526], [45.156260,-87.238784], [45.149845,-87.243032], [45.135315,-87.239771], [45.128049,-87.239771] 
- 
-];
-
-const boundary = L.polygon(parkBoundary, {
-  color: 'green',
-  weight: 6,          // thicker line
-  opacity: 0.5,       // 50% transparent line
-  fillOpacity: 0.1    // faint interior shading
-}).addTo(map);
-
 
 
 
@@ -160,11 +111,33 @@ function loadLayer(url, iconType, layerName, popupFn) {
     .catch(err => console.error(`Error loading ${layerName}:`, err));
 }
 
+// Layer loader function for polygon/line layers like borders
+function loadBorderLayer(url, layerName) {
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      const layer = L.geoJSON(data, {
+        style: {
+          color: '#3388ff',
+          weight: 3,
+          opacity: 0.8,
+          fill: false
+        }
+      }).addTo(map);
+
+      mapLayers[layerName] = layer;
+    });
+}
+
+
 // Load all layers
 loadLayer('/static/data/campsites.geojson', 'campsite', 'Campsites', popupFormatters.campsite);
 loadLayer('/static/data/parking.geojson', 'parking', 'Parking', popupFormatters.parking);
 loadLayer('/static/data/trailheads.geojson', 'trailhead', 'Trailheads', popupFormatters.trailhead);
 loadLayer('/static/data/wineries.geojson', 'winery', 'Wineries', popupFormatters.winery);
+loadBorderLayer('/static/data/border.geojson', 'Park Boundary');
+
+
 
 
 
