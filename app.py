@@ -7,14 +7,10 @@ import json
 app = Flask(__name__, static_folder='static')
 CORS(app)
 
-# Wildlife DB connection
-wildlife_conn = psycopg2.connect(
-    dbname="wildlife_map",
-    user=os.environ["DB_USER"],
-    password=os.environ["DB_PASS"],
-    host=os.environ["DB_HOST"],
-    port=os.environ["DB_PORT"]
-)
+import urllib.parse as urlparse
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+wildlife_conn = psycopg2.connect(DATABASE_URL)
 
 @app.route('/')
 def index():
