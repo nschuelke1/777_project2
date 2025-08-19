@@ -118,7 +118,7 @@ function loadBorderLayer(url, layerName) {
     .then(data => {
       const layer = L.geoJSON(data, {
         style: {
-          color: '#3388ff',
+          color: '#0a8106ff',
           weight: 3,
           opacity: 0.8,
           fill: false
